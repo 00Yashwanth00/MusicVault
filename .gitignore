@@ -1,0 +1,49 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.env
+
+# Vue.js build
+/dist/
+/build/
+/*.local
+*.lock
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+*.log
+*.egg-info/
+.env
+venv/
+.venv/
+env/
+ENV/
+myenv/
+
+# IDE / Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Other
+*.zip
+*.tar
+*.tar.gz
+
+backendApi.txt
+FrontendImplementation.txt
+SampleData.txt
+SampleData.sql
+SchemaCreation.sql
+test_audio.wav
