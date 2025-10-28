@@ -1,6 +1,7 @@
 const pythonService = require('../services/pythonService.js');
 
 const searchSongs = async (req, res) => {
+    console.log("In searchSongs controller");
     try {
         const { title } = req.query;
       
@@ -24,6 +25,7 @@ const searchSongs = async (req, res) => {
 const getSongsByArtist = async (req, res) => {
     try {
         const { artist } = req.query;
+        console.log("Artist:", artist);
         if (!artist) {
             return res.status(400).json({
               success: false,

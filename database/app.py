@@ -9,28 +9,48 @@ app = Flask(__name__)
 CORS(app)
 
     
-@app.route('/register', methods=['POST'])
-def register():
+@app.route('/users/register', methods=['POST'])
+def register_user():
     print("Inside regiter")
     data = request.json
     username = data.get('username')
     email = data.get('email')
     password = data.get('password')
-    is_admin = data.get('is_admin')
 
-    result = user_queries.create_user(username, email, password, is_admin)
+    result = user_queries.create_user(username, email, password)
 
     return jsonify(result)
 
 
-@app.route('/login', methods=['POST'])
-def login():
+@app.route('/users/login', methods=['POST'])
+def login_user():
     data = request.json
     email = data.get('email')
     password = data.get('password')
-    is_admin = data.get('is_admin')
 
-    result = user_queries.authenticate_user(email, password, is_admin)
+    result = user_queries.authenticate_user(email, password)
+    print("Login Result:", result)
+    return jsonify(result)
+
+@app.route('/admin/register', methods=['POST'])
+def register_admin():
+    data = request.json
+    username = data.get('username')
+    email = data.get('email')
+    password = data.get('password')
+    admin_id = data.get('admin_id')
+
+    result = user_queries.create_admin(admin_id, username, email, password)
+    return jsonify(result)
+
+@app.route('/admin/login', methods=['POST'])
+def login_admin():
+    data = request.json
+    email = data.get('email')
+    password = data.get('password')
+    admin_id = data.get('admin_id')
+
+    result = user_queries.authenticate_admin(admin_id, email, password)
 
     return jsonify(result)
 
@@ -110,6 +130,8 @@ def add_album():
 
     result = song_queries.add_album(title, artist_id, songs)
     return jsonify(result)
+
+
 
 
 

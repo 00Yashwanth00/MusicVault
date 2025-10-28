@@ -33,9 +33,10 @@ server.js
 
 #### Endpoints:
 
-- `POST /api/auth/register` - User registration
-- `POST /api/auth/login` - User authentication
-- `GET /api/auth/profile` - Get user profile (protected)
+- `POST /api/auth/register` - User and admin registration
+- `POST /api/auth/login` - User and admin authentication
+- `GET /api/auth/profile` - Get user and admin profile (protected)
+
 
 ### 2. Search Routes (`/api/search`)
 

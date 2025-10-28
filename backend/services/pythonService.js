@@ -34,14 +34,21 @@ const makeRequest = async (endpoint, data = null, method = 'post') => {
 }
 
 // Auth methods
-const register = async (userData) => {
-    return await makeRequest('/register', userData);
+const register_user = async (userData) => {
+    return await makeRequest('/users/register', userData);
 }
 
-const login = async (credentials) => {
-    return await makeRequest('/login', credentials);
+const login_user = async (credentials) => {
+    return await makeRequest('/users/login', credentials);
 }
 
+const register_admin = async (adminData) => {
+    return await makeRequest('/admin/register', adminData);
+}
+
+const login_admin = async (credentials) => {
+    return await makeRequest('/admin/login', credentials);
+}
 // Search methods
 const searchSongs = async (title) => {
     return await makeRequest('/search/songs', { title }, 'get');
@@ -78,8 +85,10 @@ const addAlbum = async (albumData) => {
 }
 
 module.exports = {
-    register,
-    login,
+    register_user,
+    login_user,
+    register_admin,
+    login_admin,
     searchSongs,
     getSongsByArtist,
     getSongsByAlbum,
