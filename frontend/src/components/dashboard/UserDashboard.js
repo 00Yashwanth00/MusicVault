@@ -31,15 +31,15 @@ const UserDashboard = () => {
             <p>Discover all songs from your favorite artists</p>
           </Link>
           
-          <div className="feature-card">
-            <h3>📊 Play History</h3>
-            <p>View your recently played songs</p>
-          </div>
+          <Link to="/user/playlists" className="feature-card">
+            <h3>🎶 My Playlists</h3>
+            <p>Manage your music collections</p>
+          </Link>
           
-          <div className="feature-card">
-            <h3>🎶 Create Playlists</h3>
+          <Link to="/user/create-playlist" className="feature-card">
+            <h3>➕ Create Playlist</h3>
             <p>Organize your music collection</p>
-          </div>
+          </Link>
         </div>
       </div>
     </div>

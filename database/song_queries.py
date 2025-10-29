@@ -166,7 +166,7 @@ class SongQueries:
             if connection:
                 connection.close()
 
-    def get_songs_by_playlist(self, playlist_name, user_id):
+    def get_songs_by_playlist(self, playlist_id, user_id):
         connection = db.connect()
         if not connection:
             return {'success': False, 'error': 'Database connection failed'}
@@ -179,10 +179,11 @@ class SongQueries:
                    JOIN PlaylistSongs ps ON p.playlist_id = ps.playlist_id 
                    JOIN Songs s ON s.song_id = ps.song_id 
                    JOIN Artists a ON s.artist_id = a.artist_id
-                   WHERE p.name = %s AND p.user_id = %s"""
-            
-            cursor.execute(query, (playlist_name, user_id))
+                   WHERE p.playlist_id = %s AND p.user_id = %s"""
+
+            cursor.execute(query, (playlist_id, user_id))
             songs = cursor.fetchall()
+            print(len(songs))
             return {'success': True, 'songs': songs}
         except Error as e:
             return {'success': False, 'error': str(e)}
@@ -217,6 +218,29 @@ class SongQueries:
             if connection:
                 connection.close()
 
+
+    def get_all_songs(self):
+        connection = db.connect()
+        if not connection:
+            return {'success': False, 'error': 'Database connection failed'}
+        
+        cursor = None
+        try:
+            cursor = connection.cursor(dictionary=True)
+            query = """SELECT s.song_id, s.title, s.duration, s.genre, s.file_path, a.artistname 
+                    FROM Songs s 
+                    JOIN Artists a ON s.artist_id = a.artist_id"""
+            cursor.execute(query)
+            songs = cursor.fetchall()
+            return {'success': True, 'songs': songs}
+        except Error as e:
+            return {'success': False, 'error': str(e)}
+        finally:
+            if cursor:
+                cursor.close()
+            if connection:
+                connection.close()
+
     def add_to_play_history(self, user_id, song_id):
         connection = db.connect()
         if not connection:
@@ -231,6 +255,103 @@ class SongQueries:
             return {'success': True, 'message': 'Play history recorded'}
         except Error as e:
             connection.rollback()
+            return {'success': False, 'error': str(e)}
+        finally:
+            if cursor:
+                cursor.close()
+            if connection:
+                connection.close()
+
+    def create_playlist(self, user_id, name, description):
+        connection = db.connect()
+        if not connection:
+            return {'success': False, 'error': 'Database connection failed'}
+        
+        cursor = None
+        try:
+            cursor = connection.cursor()
+            query = "INSERT INTO Playlists (user_id, name, description) VALUES (%s, %s, %s)"
+            cursor.execute(query, (user_id, name, description))
+            connection.commit()
+            return {'success': True, 'playlist_id': cursor.lastrowid}
+        except Error as e:
+            connection.rollback()
+            return {'success': False, 'error': str(e)}
+        finally:
+            if cursor:
+                cursor.close()
+            if connection:
+                connection.close()
+
+    def add_song_to_playlist(self, playlist_id, song_id):
+        connection = db.connect()
+        if not connection:
+            return {'success': False, 'error': 'Database connection failed'}
+        
+        cursor = None
+        try:
+            cursor = connection.cursor()
+            query = "INSERT INTO PlaylistSongs (playlist_id, song_id) VALUES (%s, %s)"
+            cursor.execute(query, (playlist_id, song_id))
+            connection.commit()
+            query = "SELECT name FROM Playlists WHERE playlist_id = %s"
+            cursor.execute(query, (playlist_id,))
+            playlist_name = cursor.fetchone()
+            return {'success': True, 'message': 'Song added to playlist', 'playlist_name': playlist_name}
+        except Error as e:
+            connection.rollback()
+            return {'success': False, 'error': str(e)}
+        finally:
+            if cursor:
+                cursor.close()
+            if connection:
+                connection.close()
+
+    # Add this method to the SongQueries class (replace the existing get_all_Playlists)
+    def get_all_playlists(self, user_id):
+        connection = db.connect()
+        if not connection:
+            return {'success': False, 'error': 'Database connection failed'}
+        
+        cursor = None
+        try:
+            cursor = connection.cursor(dictionary=True)
+            
+            # Get playlists with song count
+            query = """
+                SELECT p.playlist_id, p.name, p.description, 
+                    COUNT(ps.song_id) as song_count
+                FROM Playlists p 
+                LEFT JOIN PlaylistSongs ps ON p.playlist_id = ps.playlist_id 
+                WHERE p.user_id = %s
+                GROUP BY p.playlist_id, p.name, p.description
+                ORDER BY p.name
+            """
+            cursor.execute(query, (user_id,))
+            playlists = cursor.fetchall()
+            return {'success': True, 'playlists': playlists}
+        except Error as e:
+            return {'success': False, 'error': str(e)}
+        finally:
+            if cursor:
+                cursor.close()
+            if connection:
+                connection.close()
+
+
+    def get_all_artists(self):
+        connection = db.connect()
+        if not connection:
+            return {'success': False, 'error': 'Database connection failed'}
+        
+        cursor = None
+        try:
+            cursor = connection.cursor(dictionary=True)
+            query = "SELECT artist_id, artistname, bio FROM Artists"
+            cursor.execute(query)
+            artists = cursor.fetchall()
+            return {'success': True, 'artists': artists}
+        except Error as e:
             return {'success': False, 'error': str(e)}
         finally:
             if cursor:

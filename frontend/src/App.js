@@ -13,6 +13,10 @@ import AddAlbum from './components/admin/AddAlbum';
 import SearchSongs from './components/user/SearchSongs';
 import SongsByArtist from './components/user/SongsByArtist'; // Add this import
 import Home from './components/Home';
+import CreatePlaylist from './components/user/CreatePlaylist';
+import UserPlaylists from './components/user/UserPlaylists';
+import PlaylistSongs from './components/user/PlaylistsSongs';
+import AddToPlaylist from './components/user/AddToPlaylist';
 import './styles/App.css';
 
 function App() {
@@ -33,7 +37,11 @@ function App() {
               <Route path="/admin/add-song" element={<AddSong />} />
               <Route path="/admin/add-album" element={<AddAlbum />} />
               <Route path="/user/search-songs" element={<SearchSongs />} />
-              <Route path="/user/songs-by-artist" element={<SongsByArtist />} /> {/* Add this route */}
+              <Route path="/user/songs-by-artist" element={<SongsByArtist />} />
+              <Route path="/user/create-playlist" element={<CreatePlaylist />} />
+              <Route path="/user/playlists" element={<UserPlaylists />} />
+              <Route path="/user/playlist/:playlistId" element={<PlaylistSongs />} />
+              <Route path="/user/add-to-playlist/:playlistId" element={<AddToPlaylist />} />
             </Routes>
           </main>
         </div>

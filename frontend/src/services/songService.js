@@ -56,11 +56,21 @@ export const songService = {
     }
   },
 
+
+  getAllSongs: async () => {
+    try {
+      const response = await api.get('/api/search/all-songs');
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.error || 'Failed to fetch songs');
+    }
+  },
+
   // Get all artists for dropdown
   getArtists: async () => {
     try {
-      // Since there's no direct artists endpoint, we'll handle this differently
-      return { success: true, data: [{ artist_id: 1, artistname: 'Yashwanth R' }, { artist_id: 2, artistname: 'TestArtist2' }] };
+      const response = await api.get('/api/play/artists');
+      return response.data;
     } catch (error) {
       throw new Error('Failed to fetch artists');
     }

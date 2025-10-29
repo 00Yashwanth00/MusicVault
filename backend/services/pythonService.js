@@ -62,8 +62,8 @@ const getSongsByAlbum = async (album) => {
     return await makeRequest('/songs/album', { album }, 'get');
 }
 
-const getSongsByPlaylist = async (playlist, userId) => {
-    return await makeRequest('/songs/playlist', { playlist, user_id: userId }, 'get');
+const getSongsByPlaylist = async (playlist_id, userId) => {
+    return await makeRequest('/songs/playlist', { playlist_id, user_id: userId }, 'get');
 }
 
 // Play methods
@@ -84,6 +84,29 @@ const addAlbum = async (albumData) => {
     return await makeRequest('/admin/albums', albumData);
 }
 
+
+const addPlaylist = async (playlistData) => {
+    return await makeRequest('/playlists', playlistData);
+}
+
+
+const addSongToPlaylist = async (data) => {
+    return await makeRequest('/playlists/add-song', data);
+}
+
+const getAllPlaylists = async (userId) => {
+    return await makeRequest('/playlists', { user_id: userId }, 'get');
+}
+
+const getAllSongs = async () => {
+    return await makeRequest('/songs', null, 'get');
+}
+
+
+const getAllArtists = async () => {
+    return await makeRequest('/artists', null, 'get');
+}
+
 module.exports = {
     register_user,
     login_user,
@@ -96,5 +119,10 @@ module.exports = {
     addPlayHistory,
     addSong,
     addArtist,
-    addAlbum
+    addAlbum,
+    addPlaylist,
+    addSongToPlaylist,
+    getAllPlaylists,
+    getAllSongs,
+    getAllArtists
 };

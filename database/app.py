@@ -82,13 +82,17 @@ def get_songs_by_album():
 
 @app.route('/songs/playlist', methods=['GET'])
 def get_songs_by_playlist():
-    playlist_name = request.args.get('playlist')
+    playlist_id = request.args.get('playlist_id')
     user_id = request.args.get('user_id')
-
-    result = song_queries.get_songs_by_playlist(playlist_name, user_id)
+    result = song_queries.get_songs_by_playlist(playlist_id, user_id)
 
     return jsonify(result)
 
+
+@app.route('/songs', methods=['GET'])
+def get_all_songs():
+    result = song_queries.get_all_songs()
+    return jsonify(result)
 
 @app.route('/play-history', methods=['POST'])
 def add_play_history():
@@ -131,9 +135,37 @@ def add_album():
     result = song_queries.add_album(title, artist_id, songs)
     return jsonify(result)
 
+@app.route('/playlists', methods=['POST'])
+def create_playlist():
+    data = request.json
+    user_id = data.get('user_id')
+    name = data.get('name')
+    description = data.get('description', '')
+
+    result = song_queries.create_playlist(user_id, name, description)
+    return jsonify(result)
 
 
+@app.route('/playlists/add-song', methods=['POST'])
+def add_song_to_playlist():
+    data = request.json
+    playlist_id = data.get('playlist_id')
+    song_id = data.get('song_id')
+    result = song_queries.add_song_to_playlist(playlist_id, song_id)
+    return jsonify(result)
 
+
+@app.route('/playlists', methods=['GET'])
+def get_playlists():
+    user_id = request.args.get('user_id')
+    result = song_queries.get_all_playlists(user_id)
+    return jsonify(result)
+
+
+@app.route('/artists', methods=['GET'])
+def get_all_artists():
+    result = song_queries.get_all_artists()
+    return jsonify(result)
 
 if __name__ == '__main__':
     app.run(host='localhost', port=5001, debug=True)

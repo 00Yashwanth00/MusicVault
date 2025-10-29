@@ -68,17 +68,17 @@ const getSongsByAlbum = async (req, res) => {
 
 const getSongsByPlaylist = async (req, res) => {
     try {
-        const { playlist } = req.query;
-        const userId = req.user.userId;
-        
-        if (!playlist) {
+        const { playlist_id, user_id } = req.query;
+        console.log("Playlist ID:", playlist_id);
+        console.log("User ID:", user_id);
+        if (!playlist_id) {
           return res.status(400).json({
             success: false,
             error: 'Playlist parameter is required'
           });
         }
-  
-        const result = await pythonService.getSongsByPlaylist(playlist, userId);
+
+        const result = await pythonService.getSongsByPlaylist(playlist_id, user_id);
         res.json(result);
     } catch (error) {
         res.status(500).json({
@@ -88,4 +88,17 @@ const getSongsByPlaylist = async (req, res) => {
     }
 }
 
-module.exports = { searchSongs, getSongsByAlbum, getSongsByArtist, getSongsByPlaylist };
+
+const getAllSongs = async (req, res) => {
+    try {
+        const result = await pythonService.getAllSongs();
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+}
+
+module.exports = { searchSongs, getSongsByAlbum, getSongsByArtist, getSongsByPlaylist, getAllSongs };

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { songService } from '../../services/songService';
-import { useAuth } from '../../context/AuthContext';
 import '../../styles/Search.css';
 
 const SongsByArtist = () => {
@@ -13,7 +12,6 @@ const SongsByArtist = () => {
   const [error, setError] = useState('');
   const [hasSearched, setHasSearched] = useState(false);
   
-  const { user } = useAuth();
   const navigate = useNavigate();
 
   // Fetch artists on component mount
@@ -26,7 +24,7 @@ const SongsByArtist = () => {
     try {
       const result = await songService.getArtists();
       if (result.success) {
-        setArtists(result.data);
+        setArtists(result.artists || []);
       } else {
         setError('Failed to load artists');
       }
