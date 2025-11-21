@@ -75,4 +75,17 @@ export const songService = {
       throw new Error('Failed to fetch artists');
     }
   },
+
+
+  addToPlayHistory: async (userId, songId) => {
+    try {
+      const response = await api.post('/api/play/history', {
+        user_id: userId,
+        song_id: songId,
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.error || 'Failed to add to play history');
+    }
+  },
 };

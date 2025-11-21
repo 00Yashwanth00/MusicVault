@@ -38,6 +38,7 @@ export const authService = {
     },
 
     adminRegister: async (adminData) => {
+        console.log(adminData);
         try {
         const response = await api.post('/api/auth/admin/register', {
             ...adminData

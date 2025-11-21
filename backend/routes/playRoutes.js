@@ -9,5 +9,6 @@ router.post('/playlist', authenticateToken, createPlaylist);
 router.post('/playlist/add-song', authenticateToken, addSongToPlaylist);
 router.get('/playlists', authenticateToken, getAllPlaylists);
 router.get('/artists', authenticateToken, getAllArtists);
+router.post('/history', authenticateToken, addToHistory);
 
 module.exports = router;

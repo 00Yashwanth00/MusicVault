@@ -23,29 +23,55 @@ const AddAlbum = () => {
   const navigate = useNavigate();
 
   // Fetch artists and songs on component mount
+  // Fetch artists on component mount
   useEffect(() => {
     fetchArtists();
-    fetchSongs();
   }, []);
 
-  // Filter songs when artist is selected
+  // Fetch songs only when artist is selected
+// Fetch songs only when artist is selected
   useEffect(() => {
-    if (formData.artist_id) {
-      const artistSongs = availableSongs.filter(
-        song => song.artist_id === parseInt(formData.artist_id)
-      );
-      setFilteredSongs(artistSongs);
-    } else {
-      setFilteredSongs(availableSongs);
+    if (!formData.artist_id) {
+      setAvailableSongs([]);
+      setFilteredSongs([]);
+      return;
     }
-  }, [formData.artist_id, availableSongs]);
+
+    const selectedArtist = artists.find(
+      a => a.artist_id === parseInt(formData.artist_id)
+    );
+
+    if (selectedArtist) {
+      fetchSongs(selectedArtist.artistname);
+    }
+
+  }, [formData.artist_id, artists]);
+
+
+const fetchSongs = async (artistId) => {
+  setSongsLoading(true);
+  try {
+    const response = await songService.getSongsByArtist(artistId);
+
+    const songs = response.songs || [];
+
+    setAvailableSongs(songs);
+    setFilteredSongs(songs);
+
+  } catch (error) {
+    console.error('Failed to fetch songs:', error);
+    setError('Failed to load songs');
+  }
+  setSongsLoading(false);
+};
+
 
   const fetchArtists = async () => {
     setArtistsLoading(true);
     try {
       const result = await artistService.getArtists();
       if (result.success) {
-        setArtists(result.data);
+        setArtists(result.artists);
       }
     } catch (error) {
       console.error('Failed to fetch artists:', error);
@@ -54,24 +80,6 @@ const AddAlbum = () => {
     setArtistsLoading(false);
   };
 
-  const fetchSongs = async () => {
-    setSongsLoading(true);
-    try {
-      // For now, using mock data - replace with actual API call when available
-      const mockSongs = [
-        { song_id: 1, title: 'TestSong', artist_id: 1, artistname: 'Yashwanth R' },
-        { song_id: 2, title: 'Song Two', artist_id: 1, artistname: 'Artist One' },
-        { song_id: 3, title: 'Song Three', artist_id: 2, artistname: 'Artist Two' },
-        { song_id: 4, title: 'Song Four', artist_id: 3, artistname: 'Artist Three' },
-      ];
-      setAvailableSongs(mockSongs);
-      setFilteredSongs(mockSongs);
-    } catch (error) {
-      console.error('Failed to fetch songs:', error);
-      setError('Failed to load songs');
-    }
-    setSongsLoading(false);
-  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;

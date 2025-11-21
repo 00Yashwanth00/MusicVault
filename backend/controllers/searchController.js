@@ -13,6 +13,11 @@ const searchSongs = async (req, res) => {
         }
 
         const result = await pythonService.searchSongs(title);
+        // console.log("Search Results:", result);
+        // for(let song of result.songs) {
+        //     console.log("Song Title:", song.title);
+        //     console.log("File Path:", song.file_path);
+        // }
       res.json(result);
     } catch (error) {
         res.status(500).json({

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import { songService } from '../../services/songService';
+import AudioPlayer from '../common/AudioPlayer';
 import '../../styles/Search.css';
 
 const SongsByArtist = () => {
@@ -11,7 +13,9 @@ const SongsByArtist = () => {
   const [artistsLoading, setArtistsLoading] = useState(false);
   const [error, setError] = useState('');
   const [hasSearched, setHasSearched] = useState(false);
+  const [currentlyPlaying, setCurrentlyPlaying] = useState(null);
   
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   // Fetch artists on component mount
@@ -50,12 +54,18 @@ const SongsByArtist = () => {
     setLoading(true);
     setError('');
     setHasSearched(true);
+    setCurrentlyPlaying(null); // Reset currently playing when new search
 
     try {
       const result = await songService.getSongsByArtist(selectedArtist);
       console.log('Songs by artist result:', result);
       if (result.success) {
-        setArtistSongs(result.songs || []);
+        // Add audio_url to each song
+        const songsWithAudioUrl = result.songs.map(song => ({
+          ...song,
+          audio_url: song.audio_url || `http://localhost:5000/api/songs/${song.file_path}`
+        }));
+        setArtistSongs(songsWithAudioUrl || []);
         if (result.songs.length === 0) {
           setError(`No songs found for artist "${selectedArtist}"`);
         }
@@ -75,13 +85,35 @@ const SongsByArtist = () => {
     setArtistSongs([]);
     setError('');
     setHasSearched(false);
+    setCurrentlyPlaying(null);
   };
 
-  const handlePlaySong = (song) => {
-    // For now, just log the play action
-    console.log('Playing song:', song);
-    // You can add play history tracking here
-    // songService.addToPlayHistory(user.user_id, song.song_id);
+  const handlePlaySong = async (song) => {
+    try {
+      // Stop any currently playing song
+      if (currentlyPlaying && currentlyPlaying.song_id !== song.song_id) {
+        setCurrentlyPlaying(null);
+      }
+
+      // Set the new song as currently playing
+      setCurrentlyPlaying(song);
+
+      // Record play history
+      if (user && user.user_id) {
+        try {
+          await songService.addToPlayHistory(user.user_id,song.song_id);
+          console.log('Play history recorded for song:', song.title);
+        } catch (historyError) {
+          console.error('Failed to record play history:', historyError);
+        }
+      }
+    } catch (error) {
+      console.error('Error playing song:', error);
+    }
+  };
+
+  const handleStopPlaying = () => {
+    setCurrentlyPlaying(null);
   };
 
   const formatDuration = (seconds) => {
@@ -110,6 +142,20 @@ const SongsByArtist = () => {
         <h1>Songs by Artist</h1>
         <p>Discover all songs from your favorite artists</p>
       </div>
+
+      {/* Global Audio Player */}
+      {currentlyPlaying && (
+        <div className="global-audio-player">
+          <div className="now-playing">
+            <span>Now Playing: </span>
+            <strong>{currentlyPlaying.title}</strong> by {currentlyPlaying.artistname}
+          </div>
+          <AudioPlayer 
+            song={currentlyPlaying} 
+            onStop={handleStopPlaying}
+          />
+        </div>
+      )}
 
       <div className="search-content">
         {/* Artist Selection Form */}
@@ -182,7 +228,12 @@ const SongsByArtist = () => {
                 {artistSongs.map((song) => (
                   <div key={song.song_id} className="song-card">
                     <div className="song-info">
-                      <h3 className="song-title">{song.title}</h3>
+                      <h3 className="song-title">
+                        {song.title}
+                        {currentlyPlaying?.song_id === song.song_id && (
+                          <span className="playing-indicator"> 🔊 Playing</span>
+                        )}
+                      </h3>
                       <p className="song-artist">{song.artistname}</p>
                       <div className="song-meta">
                         <span className="song-duration">
@@ -194,13 +245,24 @@ const SongsByArtist = () => {
                       </div>
                     </div>
                     <div className="song-actions">
-                      <button 
-                        onClick={() => handlePlaySong(song)}
-                        className="play-btn"
-                        title="Play song"
-                      >
-                        ▶ Play
-                      </button>
+                      {currentlyPlaying?.song_id === song.song_id ? (
+                        <button 
+                          onClick={handleStopPlaying}
+                          className="stop-btn"
+                          title="Stop playing"
+                        >
+                          ⏹️ Stop
+                        </button>
+                      ) : (
+                        <button 
+                          onClick={() => handlePlaySong(song)}
+                          className="play-btn"
+                          title="Play song"
+                          disabled={currentlyPlaying !== null}
+                        >
+                          ▶ Play
+                        </button>
+                      )}
                     </div>
                   </div>
                 ))}

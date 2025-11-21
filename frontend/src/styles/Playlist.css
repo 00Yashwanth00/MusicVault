@@ -354,3 +354,40 @@
   margin-bottom: 1rem;
   border: 1px solid #cfc;
 }
+
+.global-audio-player {
+  position: sticky;
+  top: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+
+.now-playing {
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.now-playing strong {
+  font-weight: 600;
+}
+
+.playing-indicator {
+  color: #667eea;
+  font-size: 0.8rem;
+  margin-left: 0.5rem;
+  font-weight: normal;
+}
+
+.play-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.stop-btn {
+  background: #ff4757 !important;
+}

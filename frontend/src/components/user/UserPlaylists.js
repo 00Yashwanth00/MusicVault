@@ -10,12 +10,18 @@ const UserPlaylists = () => {
   const [error, setError] = useState('');
   const { user } = useAuth();
 
+
   useEffect(() => {
     const fetchPlaylists = async () => {
       try {
-        const response = await playService.getAllPlaylists(user.userId);
-        
+        console.log("Inside fetchPlaylists");
+        console.log(user);
+        const response = await playService.getAllPlaylists(user.user_id);
+        console.log(response);
+        console.log(user);
         if (response.success) {
+          console.log("Playlists fetched successfully");
+          console.log(response.playlists);
           setPlaylists(response.playlists || []);
         } else {
           setError(response.error || 'Failed to load playlists');
@@ -38,9 +44,11 @@ const UserPlaylists = () => {
       <div className="playlists-header">
         <h1>My Playlists</h1>
         <p>Manage your music collections</p>
-        <Link to="/user/create-playlist" className="create-playlist-btn">
-          Create New Playlist
-        </Link>
+        {playlists.length > 0 && (
+          <Link to="/user/create-playlist" className="create-playlist-btn">
+            Create New Playlist
+          </Link>
+        )}
       </div>
 
       <div className="playlists-grid">

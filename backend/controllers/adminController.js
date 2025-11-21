@@ -88,4 +88,17 @@ const addAlbum = async (req, res) => {
 }
 
 
-module.exports = { addAlbum, addArtist, addSong };
+const getAllArtists = async (req, res) => {
+    try {
+        const result = await pythonService.getAllArtists();
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+}
+
+
+module.exports = { addAlbum, addArtist, addSong, getAllArtists };

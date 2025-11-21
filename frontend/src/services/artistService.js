@@ -14,14 +14,11 @@ export const artistService = {
   // Get all artists - we'll need to create a backend endpoint for this
   getArtists: async () => {
     try {
-      // For now, return mock data or empty array
-      // In production, you'd call: const response = await api.get('/api/artists');
+      const response = await api.get('/api/play/artists');
+      console.log('Fetched artists:', response.data.artists);
       return { 
-        success: true, 
-        data: [
-          // Mock data for testing - remove when backend endpoint is ready
-          { artist_id: 1, artistname: 'Yashwanth R' }
-        ] 
+        success: response.data.success,
+        artists: response.data.artists
       };
     } catch (error) {
       throw new Error('Failed to fetch artists');

@@ -2,17 +2,18 @@ const pythonService = require('../services/pythonService.js');
 
 const addToHistory = async (req, res) => {
     try {
-        const { songId } = req.body;
-        const userId = req.user.userId;
+        const { song_id, user_id } = req.body;
 
-        if (!songId) {
+        console.log('Adding to history:', { user_id, song_id });
+
+        if (!song_id) {
             return res.status(400).json({
             success: false,
             error: 'Song ID is required'
             });
         }
 
-        const result = await pythonService.addPlayHistory(userId, songId);
+        const result = await pythonService.addPlayHistory(user_id, song_id);
         res.json(result);
     } catch (error) {
         res.status(500).json({
@@ -71,6 +72,7 @@ const getAllPlaylists = async (req, res) => {
         const userId = req.user.userId;
 
         const result = await pythonService.getAllPlaylists(userId);
+        console.log('Fetched playlists:', result);
         res.json(result);
     } catch (error) {
         res.status(500).json({
@@ -84,7 +86,12 @@ const getAllPlaylists = async (req, res) => {
 const getAllArtists = async (req, res) => {
     try {
         const result = await pythonService.getAllArtists();
-        res.json(result);
+        res.json({
+            success: true,
+            artists: result.artists
+        });
+
+        console.log('Fetched artists:', result.artists);
     } catch (error) {
         res.status(500).json({
             success: false,
@@ -92,6 +99,9 @@ const getAllArtists = async (req, res) => {
         });
     }
 }
+
+
+
 
 
 module.exports = {

@@ -17,6 +17,7 @@ import CreatePlaylist from './components/user/CreatePlaylist';
 import UserPlaylists from './components/user/UserPlaylists';
 import PlaylistSongs from './components/user/PlaylistsSongs';
 import AddToPlaylist from './components/user/AddToPlaylist';
+import AdminRegister from './components/auth/AdminRegister';
 import './styles/App.css';
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/user/login" element={<UserLogin />} />
               <Route path="/user/register" element={<UserRegister />} />
+              <Route path="/admin/register" element={<AdminRegister />} />
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route path="/user/dashboard" element={<UserDashboard />} />
               <Route path="/admin/dashboard" element={<AdminDashboard />} />

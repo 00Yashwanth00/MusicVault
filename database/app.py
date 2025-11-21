@@ -39,6 +39,7 @@ def register_admin():
     email = data.get('email')
     password = data.get('password')
     admin_id = data.get('admin_id')
+    print("Admin Registration:", admin_id, username, email, password)
 
     result = user_queries.create_admin(admin_id, username, email, password)
     return jsonify(result)
@@ -49,6 +50,8 @@ def login_admin():
     email = data.get('email')
     password = data.get('password')
     admin_id = data.get('admin_id')
+
+    print("Admin Login:", admin_id, email, password)
 
     result = user_queries.authenticate_admin(admin_id, email, password)
 
@@ -99,6 +102,8 @@ def add_play_history():
     data = request.json
     user_id = data.get('user_id')
     song_id = data.get('song_id')
+
+    print("Adding to play history:", user_id, song_id)
 
     result = song_queries.add_to_play_history(user_id, song_id)
     return jsonify(result)
@@ -158,7 +163,9 @@ def add_song_to_playlist():
 @app.route('/playlists', methods=['GET'])
 def get_playlists():
     user_id = request.args.get('user_id')
+    print("Fetching playlists for user_id:", user_id)
     result = song_queries.get_all_playlists(user_id)
+    print("Playlists fetched:", result)
     return jsonify(result)
 
 

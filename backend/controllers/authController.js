@@ -87,9 +87,10 @@ const loginAdmin = async (req, res) => {
 }
 
 const registerAdmin = async (req, res) => {
+    console.log('Register Admin called');
     try {
         const { username, email, password, admin_id } = req.body;
-
+        console.log(password);
         const result = await pythonService.register_admin({
             username,
             email,
